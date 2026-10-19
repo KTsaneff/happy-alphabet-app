@@ -1,0 +1,19 @@
+{
+  "name": "happy-alphabet-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Весела азбука — игра за учене на българската и английската азбука за деца",
+  "scripts": {
+    "sync": "cap sync android",
+    "icons": "python3 tools/make_icons.py"
+  },
+  "dependencies": {
+    "@capacitor-community/text-to-speech": "8.0.2",
+    "@capacitor/android": "8.5.2",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2"
+  }
+}

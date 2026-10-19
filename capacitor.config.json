@@ -1,0 +1,9 @@
+{
+  "appId": "com.ktsaneff.veselaazbuka",
+  "appName": "Весела азбука",
+  "webDir": "docs",
+  "android": {
+    "backgroundColor": "#dff3ff",
+    "allowMixedContent": false
+  }
+}
