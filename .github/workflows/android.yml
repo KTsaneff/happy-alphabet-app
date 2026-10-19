@@ -43,17 +43,30 @@ jobs:
           name: vesela-azbuka-test-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Verify APK
+        run: |
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          {
+            echo '```'
+            "$BT/aapt2" dump badging "$APK" | grep -E "^(package|sdkVersion|targetSdkVersion|application-label|native-code|testOnly)" || true
+            "$BT/aapt2" dump xmltree --file AndroidManifest.xml "$APK" | grep -iE "testOnly|debuggable|extractNativeLibs" || true
+            "$BT/apksigner" verify -v "$APK" | head -8
+            echo '```'
+          } | tee apk-check.md
+
       - name: Publish test APK as a download link
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp android/app/build/outputs/apk/debug/app-debug.apk vesela-azbuka.apk
+          { echo "За инсталиране директно на таблет или телефон. Изтегли vesela-azbuka.apk и го отвори."; echo; echo "<details><summary>Проверка на APK</summary>"; echo; cat apk-check.md; echo "</details>"; } > apk-notes.md
           gh release delete test-build --yes --cleanup-tag || true
           gh release create test-build vesela-azbuka.apk \
             --prerelease \
             --target "${{ github.sha }}" \
             --title "Тестова версия 1.0.${{ github.run_number }}" \
-            --notes "За инсталиране директно на таблет или телефон. Изтегли vesela-azbuka.apk и го отвори."
+            --notes-file apk-notes.md
 
       - name: Restore upload key
         if: env.HAS_UPLOAD_KEY == 'true'
